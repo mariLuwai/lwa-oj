@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: judge_db
+    restart: always
+    environment:
+      POSTGRES_USER: judge_user
+      POSTGRES_PASSWORD: your_secure_password
+      POSTGRES_DB: judge_platform
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - [cite_start]./initdb:/docker-entrypoint-initdb.d #TODO: change the path
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U judge_user -d judge_platform"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
